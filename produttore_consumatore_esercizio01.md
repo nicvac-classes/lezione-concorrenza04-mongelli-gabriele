@@ -59,13 +59,44 @@ def genera_numero():
 
 
 class ProduttoreThread(threading.Thread):
-    # DA IMPLEMENTARE
-    pass
+def __init__(self, id_linea):
+    super().__init__()
+    self.id_linea = id_linea
+
+def run (self):
+     global metti
+    for _ in range(N_CHIAMATE):
+        chiamata = genera_numero()      
+        vuoto.acquire()
+        mutexP.acquire()
+        i_metti=metti
+        metti=(metti+1)%DIM_BUFFER
+        mutexP.release()
+        buffer[i_metti]=chiamata
+        print(f"[LINEA-{self.id_linea}] ricevuta chiamata {chiamata}")
+        pieno.release()
+        pass
 
 
 class ConsumatoreThread(threading.Thread):
-    # DA IMPLEMENTARE
-    pass
+  def __init__(self, id_operatore):
+        super().__init__()
+        self.id_operatore = id_operatore
+
+    def run (self):
+        global togli
+        while True:
+            pieno.acquire()
+            mutexC.acquire()
+            i_togli=togli
+            togli = (togli + 1) % DIM_BUFFER
+            mutexC.release()
+            chiamata = buffer[i_togli]
+            if chiamata is None:
+                break
+            print(f"[OP-{self.id_operatore}] risponde a {chiamata}")
+            vuoto.release()
+             pass
 
 
 def main():
